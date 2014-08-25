@@ -116,7 +116,9 @@ def initialize_integral_ir(representation, itg_data, form_data, form_id):
 
     # Set number of cells if not set TODO: Get automatically from number of domains
     num_cells = itg_data.metadata.get("num_cells")
-
+    # Pass through special properties of the integral; e.g. is it for a contact
+    special = itg_data.metadata.get("special")
+    
     return {"representation":        representation,
             "integral_type":         itg_data.integral_type,
             "subdomain_id":          itg_data.subdomain_id,
@@ -130,6 +132,7 @@ def initialize_integral_ir(representation, itg_data, form_data, form_id):
             "needs_oriented":        needs_oriented_jacobian(form_data),
             "num_cells":             num_cells,
             "enabled_coefficients":  itg_data.enabled_coefficients,
+            "special":               special
             }
 
 def generate_enabled_coefficients(enabled_coefficients):

@@ -131,6 +131,8 @@ from ffc.codegeneration import generate_code
 from ffc.formatting import format_code
 from ffc.wrappers import generate_wrapper_code
 
+from IPython import embed
+
 def compile_form(forms, object_names={}, prefix="Form",\
                  parameters=default_parameters()):
     """This function generates UFC code for a given UFL form or list
@@ -150,12 +152,12 @@ def compile_form(forms, object_names={}, prefix="Form",\
     cpu_time = time()
     analysis = analyze_forms(forms, parameters)
     _print_timing(1, time() - cpu_time)
-
+    embed()
     # Stage 2: intermediate representation
     cpu_time = time()
     ir = compute_ir(analysis, parameters)
     _print_timing(2, time() - cpu_time)
-
+    embed()
     # Stage 3: optimization
     cpu_time = time()
     oir = optimize_ir(ir, parameters)

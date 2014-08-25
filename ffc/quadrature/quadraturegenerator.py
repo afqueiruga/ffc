@@ -82,6 +82,7 @@ def _tabulate_tensor(ir, prefix, parameters):
     oriented      = ir["needs_oriented"]
     element_data  = ir["element_data"]
     num_cells     = ir["num_cells"]
+    special       = ir["special"]
 
     # Create sets of used variables
     used_weights    = set()
@@ -758,7 +759,8 @@ def _evaluate_basis_at_quadrature_points(psi_tables,
                                          element_data,
                                          form_prefix,
                                          num_vertices,
-                                         num_cells):
+                                         num_cells,
+                                         multi_quadrature_points=False):
     "Generate code for calling evaluate basis (derivatives) at quadrature points"
 
     # Prefetch formats to speed up code generation
@@ -868,7 +870,10 @@ def _evaluate_basis_at_quadrature_points(psi_tables,
 
                     # Compute variables for code generation
                     eval_name     = "%s_values_%d" % (prefix, cell_number)
-                    table_offset  = cell_number*space_dim
+                    if multi_quadrature_points:
+                        table_offset  = cell_number*space_dim
+                    else:
+                        table_offset  = cell_number*space_dim
                     vertex_offset = cell_number*num_vertices*gdim
 
                     # Generate block of code for loop
