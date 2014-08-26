@@ -310,7 +310,8 @@ def _tabulate_tensor(ir, prefix, parameters):
                                                        element_data,
                                                        prefix,
                                                        num_vertices,
-                                                       num_cells)
+                                                       num_cells,
+                                                       special=="contact")
 
     # Reset the element tensor (array 'A' given as argument to tabulate_tensor() by assembler)
     # Handle functionals.
@@ -823,7 +824,7 @@ def _evaluate_basis_at_quadrature_points(psi_tables,
     code += [f_comment("Set quadrature weights")]
     code += [f_declaration("const double*", "W", "quadrature_weights")]
     code += [""]
-
+    print "here"
     # Generate code for calling evaluate_basis_[derivatives_]all
     for prefix in prefixes:
 
@@ -870,10 +871,9 @@ def _evaluate_basis_at_quadrature_points(psi_tables,
 
                     # Compute variables for code generation
                     eval_name     = "%s_values_%d" % (prefix, cell_number)
-                    if multi_quadrature_points:
-                        table_offset  = cell_number*space_dim
-                    else:
-                        table_offset  = cell_number*space_dim
+                    
+                    # For contact: Each cell looks at its own quadrature points
+                    table_offset  = cell_number*space_dim
                     vertex_offset = cell_number*num_vertices*gdim
 
                     # Generate block of code for loop
@@ -909,7 +909,13 @@ def _evaluate_basis_at_quadrature_points(psi_tables,
                     # Generate code
                     code += [f_comment("Evaluate basis functions on cell %d" % cell_number)]
                     code += [f_static_array("double", eval_name, eval_size)]
-                    code += f_loop(block, [("ip", 0, "num_quadrature_points")])
+                    if  multi_quadrature_points:
+                        code += f_loop(block,
+                                       [("ip",
+                                        "num_quadrature_points*"+str(cell_number),
+                                        "num_quadrature_points*(1+"+str(cell_number)+")")])
+                    else:
+                        code += f_loop(block, [("ip", 0, "num_quadrature_points")])
                     code += [""]
 
             # Code for evaluate_basis_derivatives_all (derivative of degree n > 0)
@@ -963,7 +969,10 @@ def _evaluate_basis_at_quadrature_points(psi_tables,
 
                     # Compute variables for code generation
                     eval_name     = "%s_dvalues_%d_%d" % (prefix, n, cell_number)
+                    # For contact: Each cell looks at its own quadrature points
+                    # no, this was wrong. table_offset says where to put it...
                     table_offset  = cell_number*space_dim
+                    
                     vertex_offset = cell_number*num_vertices*gdim
 
                     # Generate block of code for loop
@@ -1008,7 +1017,13 @@ def _evaluate_basis_at_quadrature_points(psi_tables,
                     # Generate code
                     code += [f_comment("Evaluate basis function derivatives on cell %d" % cell_number)]
                     code += [f_static_array("double", eval_name, eval_size)]
-                    code += f_loop(block, [("ip", 0, "num_quadrature_points")])
+                    if  multi_quadrature_points:
+                        code += f_loop(block,
+                                       [("ip",
+                                        "num_quadrature_points*"+str(cell_number),
+                                        "num_quadrature_points*(1+"+str(cell_number)+")")])
+                    else:
+                        code += f_loop(block, [("ip", 0, "num_quadrature_points")])
                     code += [""]
 
                 # Add newline
