@@ -817,7 +817,10 @@ class QuadratureTransformerBase(Transformer):
 
         # Set domain type
         self.integral_type = integral_type
-
+        # if integral_type=="custom":
+        #     print " This is the one you want."
+        #     from IPython import embed
+        #     embed() # DEBUG STATEMENT HERE
         # Get terms
         terms = self.visit(integrand)
 
@@ -846,7 +849,9 @@ class QuadratureTransformerBase(Transformer):
                 for i, s in enumerate(sets):
                     new_terms[loop][0][i].update(s)
                 new_terms[loop][1].append((entry, value, ops))
-
+        # if integral_type=="custom":
+        #     from IPython import embed
+        #     embed() # DEBUG STATEMENT HERE
         return new_terms
 
     def _create_loop_entry(self, key, f_nzc):
@@ -1064,7 +1069,7 @@ class QuadratureTransformerBase(Transformer):
     def _create_function_name(self, component, deriv, avg, is_quad_element, ufl_function, ffc_element):
         ffc_assert(ufl_function in self._function_replace_values,
                    "Expecting ufl_function to have been mapped prior to this call.")
-
+       
         # Get string for integration points.
         f_ip = "0" if (avg or self.points == 1) else format["integration points"]
 
@@ -1099,7 +1104,10 @@ class QuadratureTransformerBase(Transformer):
             # Pick first free index of secondary type
             # (could use primary indices, but it's better to avoid confusion).
             loop_index = format["free indices"][0]
-
+        # if self.integral_type=="custom":
+        #     print " This is the one you want."
+        #     from IPython import embed
+        #     embed() # DEBUG STATEMENT HERE
         # If we have a quadrature element we can use the ip number to look
         # up the value directly. Need to add offset in case of components.
         if is_quad_element:
@@ -1174,7 +1182,14 @@ class QuadratureTransformerBase(Transformer):
             # table since we will either loop the entire space dimension or the
             # non-zeros.
             basis_index = "0" if loop_index_range == 1 else loop_index
+            # Here, if I am a macro cell, I have multiple basis functions.
+            # So, I need to grab the right basis function depending on my resctriction
+            # and correspondingly offset the basis_index
+            if self.num_cells > 1:
+                offset = {"+": "0", "-": str(ffc_element.space_dimension()), None: "0"}[self.restriction]
+                basis_index = basis_index +" + "+ offset
             basis_access = format["component"]("", [f_ip, basis_index])
+            
             basis_name = psi_name + basis_access
             # Try to set access to the outermost possible loop
             if f_ip == "0" and basis_access == "0":
@@ -1198,7 +1213,10 @@ class QuadratureTransformerBase(Transformer):
                         psi_name, used_nzcs, ufl_function.element())
                 self.function_data[function_expr] = data
             function_symbol_name = format["function value"](data[0])
-
+        # if self.integral_type=="custom":
+        #     print " This is the one you want."
+        #     from IPython import embed
+        #     embed() # DEBUG STATEMENT HERE
         # TODO: This access stuff was changed subtly during my refactoring, the
         # X_ACCESS vars is an attempt at making it right, make sure it is correct now!
         return self._create_symbol(function_symbol_name, F_ACCESS)[()]

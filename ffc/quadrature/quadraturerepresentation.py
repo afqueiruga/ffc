@@ -86,7 +86,10 @@ def compute_integral_ir(itg_data,
                                              ir["entitytype"],
                                              form_data.function_replace_map,
                                              ir["optimise_parameters"])
-
+    # if itg_data.integral_type=="custom":
+    #     from IPython import embed
+    #     embed() # DEBUG STATEMENT HERE
+    transformer.num_cells = ir['num_cells']
     # Transform integrals.
     cell = itg_data.domain.cell()
     ir["trans_integrals"] = _transform_integrals_by_type(ir, transformer, integrals_dict,
@@ -185,7 +188,6 @@ def _transform_integrals_by_type(ir, transformer, integrals_dict, integral_type,
             terms[i] = _transform_integrals(transformer, integrals_dict, integral_type)
 
     elif integral_type == "custom":
-
         # Compute transformed integrale: same as for cell integrals
         info("Transforming custom integral")
         transformer.update_cell()
