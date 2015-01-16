@@ -689,7 +689,8 @@ def _tabulate_psis(tables, used_psi_tables, inv_name_map, used_nzcs, optimise_pa
     f_loop         = format["generate loop"]
     f_quad_point   = format["quadrature point"]
     f_eval_basis   = format["evaluate basis snippet"]
-
+    f_eval_basis_quad_offset = format["eval_basis_quad_offset"]
+    
     # FIXME: Check if we can simplify the tabulation
     code = []
     code += [f_comment("Values of basis functions at quadrature points.")]
@@ -777,6 +778,7 @@ def _evaluate_basis_at_quadrature_points(psi_tables,
     f_eval_derivs_init = format["eval_derivs_init"]
     f_eval_derivs      = format["eval_derivs"]
     f_eval_derivs_copy = format["eval_derivs_copy"]
+    f_eval_basis_quad_offset = format["eval_basis_quad_offset"]
 
     code = []
 
@@ -880,12 +882,19 @@ def _evaluate_basis_at_quadrature_points(psi_tables,
                     block = []
 
                     # Generate code for calling evaluate_basis_all
-                    block += [f_eval_basis % {"form_prefix":    form_prefix,
+                    if not multi_quadrature_points:
+                        block += [f_eval_basis % {"form_prefix":    form_prefix,
                                               "element_number": element_number,
                                               "eval_name":      eval_name,
                                               "gdim":           gdim,
                                               "vertex_offset":  vertex_offset}]
-
+                    else:
+                        block += [f_eval_basis_quad_offset % {"form_prefix":    form_prefix,
+                                              "element_number": element_number,
+                                              "eval_name":      eval_name,
+                                              "gdim":           gdim,
+                                              "vertex_offset":  vertex_offset,
+                                              "quad_offset": "num_quadrature_points"}]
                     # Iterate over components and extract values
                     for c in components:
 
@@ -909,7 +918,7 @@ def _evaluate_basis_at_quadrature_points(psi_tables,
                     # Generate code
                     code += [f_comment("Evaluate basis functions on cell %d" % cell_number)]
                     code += [f_static_array("double", eval_name, eval_size)]
-                    if  multi_quadrature_points:
+                    if  False:
                         code += f_loop(block,
                                        [("ip",
                                         "num_quadrature_points*"+str(cell_number),
@@ -979,13 +988,20 @@ def _evaluate_basis_at_quadrature_points(psi_tables,
                     block = []
 
                     # Generate code for calling evaluate_basis_derivatives_all
-                    block += [f_eval_derivs % {"form_prefix":    form_prefix,
+                    if not multi_quadrature_points:
+                        block += [f_eval_derivs % {"form_prefix":    form_prefix,
                                                "element_number": element_number,
                                                "eval_name":      eval_name,
                                                "gdim":           gdim,
                                                "vertex_offset":  vertex_offset,
                                                "n":              n}]
-
+                    else:
+                        block += [f_eval_basis_quad_offset % {"form_prefix":    form_prefix,
+                                              "element_number": element_number,
+                                              "eval_name":      eval_name,
+                                              "gdim":           gdim,
+                                              "vertex_offset":  vertex_offset,
+                                              "quad_offset": "num_quadrature_points"}]
                     # Iterate over derivatives and extract values
                     seen_derivs = set()
                     for i, d in enumerate(derivs):
@@ -1017,7 +1033,7 @@ def _evaluate_basis_at_quadrature_points(psi_tables,
                     # Generate code
                     code += [f_comment("Evaluate basis function derivatives on cell %d" % cell_number)]
                     code += [f_static_array("double", eval_name, eval_size)]
-                    if  multi_quadrature_points:
+                    if  False:
                         code += f_loop(block,
                                        [("ip",
                                         "num_quadrature_points*"+str(cell_number),

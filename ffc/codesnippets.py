@@ -29,7 +29,7 @@
 
 __all__ = ["comment_ufc", "comment_dolfin", "header_h", "header_c", "footer",
            "compute_jacobian", "compute_jacobian_inverse",
-           "eval_basis_decl", "eval_basis_init", "eval_basis", "eval_basis_copy",
+           "eval_basis_decl", "eval_basis_init", "eval_basis", "eval_basis_quad_offset", "eval_basis_copy",
            "eval_derivs_decl", "eval_derivs_init", "eval_derivs", "eval_derivs_copy"]
 
 __old__ = ["evaluate_f",
@@ -784,6 +784,12 @@ for (std::size_t ip = 0; ip < num_quadrature_points; ip++)
 eval_basis = """\
 // Get current quadrature point and compute values of basis functions
 const double* x = quadrature_points + ip*%(gdim)s;
+const double* v = vertex_coordinates + %(vertex_offset)s;
+%(form_prefix)s_finite_element_%(element_number)s::_evaluate_basis_all(%(eval_name)s, x, v, cell_orientation);"""
+
+eval_basis_quad_offset = """\
+// Get current quadrature point and compute values of basis functions
+const double* x = quadrature_points + ip*%(gdim)s + %(quad_offset)s;
 const double* v = vertex_coordinates + %(vertex_offset)s;
 %(form_prefix)s_finite_element_%(element_number)s::_evaluate_basis_all(%(eval_name)s, x, v, cell_orientation);"""
 

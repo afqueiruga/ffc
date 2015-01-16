@@ -285,6 +285,7 @@ format.update({
     "eval_basis_decl":          eval_basis_decl,
     "eval_basis_init":          eval_basis_init,
     "eval_basis":               eval_basis,
+    "eval_basis_quad_offset":               eval_basis_quad_offset,
     "eval_basis_copy":          eval_basis_copy,
     "eval_derivs_decl":         eval_derivs_decl,
     "eval_derivs_init":         eval_derivs_init,
