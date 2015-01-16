@@ -811,6 +811,12 @@ const double* x = quadrature_points + ip*%(gdim)s;
 const double* v = vertex_coordinates + %(vertex_offset)s;
 %(form_prefix)s_finite_element_%(element_number)s::_evaluate_basis_derivatives_all(%(n)s, %(eval_name)s, x, v, cell_orientation);"""
 
+eval_derivs_quad_offset = """\
+// Get current quadrature point and compute values of basis function derivatives
+const double* x = quadrature_points + ip*%(gdim)s + %(quad_offset)s;
+const double* v = vertex_coordinates + %(vertex_offset)s;
+%(form_prefix)s_finite_element_%(element_number)s::_evaluate_basis_derivatives_all(%(n)s, %(eval_name)s, x, v, cell_orientation);"""
+
 eval_derivs_copy = """\
 // Copy values to table %(table_name)s
 for (std::size_t i = 0; i < %(space_dim)s; i++)

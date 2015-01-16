@@ -290,6 +290,8 @@ format.update({
     "eval_derivs_decl":         eval_derivs_decl,
     "eval_derivs_init":         eval_derivs_init,
     "eval_derivs":              eval_derivs,
+    "eval_derives_quad_offset":               eval_derivs_quad_offset,
+
     "eval_derivs_copy":         eval_derivs_copy,
     "extract_cell_coordinates": lambda offset, r : "const double* vertex_coordinates_%d = vertex_coordinates + %d;" % (r, offset)
     })

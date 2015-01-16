@@ -690,7 +690,8 @@ def _tabulate_psis(tables, used_psi_tables, inv_name_map, used_nzcs, optimise_pa
     f_quad_point   = format["quadrature point"]
     f_eval_basis   = format["evaluate basis snippet"]
     f_eval_basis_quad_offset = format["eval_basis_quad_offset"]
-    
+    f_eval_derivs_quad_offset = format["eval_basis_quad_offset"]
+
     # FIXME: Check if we can simplify the tabulation
     code = []
     code += [f_comment("Values of basis functions at quadrature points.")]
@@ -779,6 +780,7 @@ def _evaluate_basis_at_quadrature_points(psi_tables,
     f_eval_derivs      = format["eval_derivs"]
     f_eval_derivs_copy = format["eval_derivs_copy"]
     f_eval_basis_quad_offset = format["eval_basis_quad_offset"]
+    f_eval_derivs_quad_offset = format["eval_basis_quad_offset"]
 
     code = []
 
@@ -996,7 +998,7 @@ def _evaluate_basis_at_quadrature_points(psi_tables,
                                                "vertex_offset":  vertex_offset,
                                                "n":              n}]
                     else:
-                        block += [f_eval_basis_quad_offset % {"form_prefix":    form_prefix,
+                        block += [f_eval_derivs_quad_offset % {"form_prefix":    form_prefix,
                                               "element_number": element_number,
                                               "eval_name":      eval_name,
                                               "gdim":           gdim,
