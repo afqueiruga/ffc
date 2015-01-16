@@ -246,7 +246,7 @@ def _tabulate_tensor(ir, prefix, parameters):
 
         # Check whether we need to generate facet normals
         generate_custom_facet_normal = num_cells == 2
-
+        embed() # DEBUG STATEMENT
         # Generate code for computing element tensor
         tensor_code, mem_code, num_ops = _generate_element_tensor(integrals,
                                                                   sets,

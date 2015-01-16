@@ -30,7 +30,7 @@
 __all__ = ["comment_ufc", "comment_dolfin", "header_h", "header_c", "footer",
            "compute_jacobian", "compute_jacobian_inverse",
            "eval_basis_decl", "eval_basis_init", "eval_basis", "eval_basis_quad_offset", "eval_basis_copy",
-           "eval_derivs_decl", "eval_derivs_init", "eval_derivs", "eval_derivs_copy"]
+           "eval_derivs_decl", "eval_derivs_init", "eval_derivs","eval_derivs_quad_offset", "eval_derivs_copy"]
 
 __old__ = ["evaluate_f",
            "facet_determinant", "map_onto_physical",
