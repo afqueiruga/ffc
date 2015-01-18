@@ -897,7 +897,7 @@ def _evaluate_basis_at_quadrature_points(psi_tables,
                                               "eval_name":      eval_name,
                                               "gdim":           gdim,
                                               "vertex_offset":  vertex_offset,
-                                              "quad_offset": "num_quadrature_points*"+str(cell_number)}]
+                                              "quad_offset": str(gdim)+"*num_quadrature_points*"+str(cell_number)}]
                     # Iterate over components and extract values
                     for c in components:
 
@@ -1004,7 +1004,7 @@ def _evaluate_basis_at_quadrature_points(psi_tables,
                                               "eval_name":      eval_name,
                                               "gdim":           gdim,
                                               "vertex_offset":  vertex_offset,
-                                              "quad_offset": "num_quadrature_points*"+str(cell_number)}]
+                                              "quad_offset": str(gdim)+"*num_quadrature_points*"+str(cell_number)}]
                     # Iterate over derivatives and extract values
                     seen_derivs = set()
                     for i, d in enumerate(derivs):
