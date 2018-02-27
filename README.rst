@@ -2,6 +2,9 @@
 FFC: The FEniCS Form Compiler
 -----------------------------
 
+This is afq's fork to include contacts. All of the work is on the 
+`contact_domain` branch which was not merged in.
+
 FFC is a compiler for finite element variational forms. From a
 high-level description of the form, it generates efficient low-level
 C++ code that can be used to assemble the corresponding discrete
